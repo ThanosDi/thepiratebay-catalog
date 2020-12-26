@@ -1,8 +1,14 @@
 # ThePirateBay Catalog add-on for Stremio
 
-### Show top movie or series torrents by category from ThePirateBay
+### Show movies or series torrents by category from ThePirateBay
 
 ![showTorrents](screenshots/thepiratebay-catalog.png)
+
+
+### Search movies or series torrents from ThePirateBay
+
+![showTorrents](screenshots/search.png)
+
 
 ## Quick Start
 

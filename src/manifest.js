@@ -15,10 +15,6 @@ module.exports = {
 			id: 'tpbctlg-movies',
 			extra: [
 				{
-					name: 'search',
-					isRequired: false
-				},
-				{
 					name: 'genre',
 					options: [
 						'Movies',
@@ -46,11 +42,31 @@ module.exports = {
 		},
 		{
 			type: 'movie',
+			id: 'Movies',
+			extra: [
+				{
+					name: 'search',
+					isRequired: true
+				}
+			]
+		},
+		{
+			type: 'series',
+			id: 'TV shows',
+			extra: [
+				{
+					name: 'search',
+					isRequired: true
+				}
+			]
+		},
+		{
+			type: 'movie',
 			id: 'Porn',
 			extra: [
 				{
 					name: 'search',
-					isRequired: false
+					isRequired: true
 				}
 			]
 		}

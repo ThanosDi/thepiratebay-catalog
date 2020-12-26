@@ -77,7 +77,11 @@ const fetchTorrents = ({categoryId, args}) =>
 				({args}) => hasPath(['extra', 'search'], args),
 				({args}) =>
 					PirateBay.search(args.extra.search, {
-						category: args.id === 'tpbctlg-movies' ? 'video' : 'xxx',
+						category: cond([
+							[propEq('id', 'Movies'), () => 202],
+							[propEq('id', 'Porn'), () => 500],
+							[propEq('id', 'TV shows'), () => 205]
+						])(args),
 						orderBy: 'seeds',
 						sortBy: 'desc'
 					})
