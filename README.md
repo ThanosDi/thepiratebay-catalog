@@ -10,7 +10,7 @@
 ![showTorrents](screenshots/search.png)
 
 
-## Quick Start
+## To run plugin locally
 
 ```bash
 npm install
@@ -18,5 +18,3 @@ npm start
 ```
 
 Then run Stremio, click the add-on button (puzzle piece icon) on the top right, and write `http://127.0.0.1:7000/manifest.json` in the "Addon Url" field on the top left.
-
-**Pre-requisites: Node.js, Git**
