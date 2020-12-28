@@ -4,6 +4,6 @@
         { "src": "serverless.js", "use": "@now/node" }
     ],
     "routes": [
-        { "src": "/.*", "dest": "serverless.js" }
+        { "src": "/.*", "dest": "/serverless.js" }
     ]
 }
