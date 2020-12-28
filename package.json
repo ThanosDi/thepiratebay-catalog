@@ -8,6 +8,9 @@
         "dev": "nodemon src/server.js",
         "precommit": "lint-staged"
     },
+    "engines": {
+        "node": "12.x"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/thanosdi/thepiratebay-catalog"

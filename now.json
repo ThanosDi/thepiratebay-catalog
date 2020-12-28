@@ -1,9 +1,9 @@
 {
     "version": 2,
     "builds": [
-        { "src": "./src/serverless.js", "use": "@now/node" }
+        { "src": "serverless.js", "use": "@now/node" }
     ],
     "routes": [
-        { "src": "/.*", "dest": "./src/serverless.js" }
+        { "src": "/.*", "dest": "serverless.js" }
     ]
 }

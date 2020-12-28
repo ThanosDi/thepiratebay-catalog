@@ -31,3 +31,5 @@ node_modules
 dist
 wercker.env
 .vscode
+
+.vercel
