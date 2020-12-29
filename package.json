@@ -1,0 +1,94 @@
+{
+    "name": "thepiratebay-catalog",
+    "version": "1.0.0",
+    "description": "The Pirate Bay Catalog to browser torrents.",
+    "main": "./src/server.js",
+    "scripts": {
+        "start": "node src/server.js",
+        "dev": "nodemon src/server.js",
+        "precommit": "lint-staged"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/thanosdi/thepiratebay-catalog"
+    },
+    "keywords": [
+        "stremio",
+        "stremio-addons",
+        "addons",
+        "thepiratebay",
+        "catalog torrent",
+        "browser torrents"
+    ],
+    "author": "ThanosDi",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/thanosdi/thepiratebay-catalog/issues"
+    },
+    "homepage": "https://github.com/thanosdi/thepiratebay-catalog",
+    "dependencies": {
+        "base-64": "^1.0.0",
+        "episode-parser": "^2.0.0",
+        "is-video": "^1.0.1",
+        "magnet-uri": "^5.1.3",
+        "magnet2torrent-js": "^1.4.0",
+        "name-to-imdb": "^3.0.2",
+        "p-map": "^4.0.0",
+        "p-pipe": "^3.1.0",
+        "parse-torrent": "^9.1.0",
+        "parse-torrent-name": "^0.5.4",
+        "pify": "^5.0.0",
+        "ramda": "^0.27.1",
+        "stremio-addon-sdk": "^1.1.0",
+        "thepiratebay": "^1.4.8",
+        "url-exist": "^2.0.2",
+        "video-name-parser": "^1.4.6"
+    },
+    "devDependencies": {
+        "husky": "1.2.0",
+        "lint-staged": "^10.5.3",
+        "nodemon": "^2.0.6",
+        "prettier": "^2.2.1",
+        "xo": "^0.36.1"
+    },
+    "prettier": {
+        "arrowParens": "avoid"
+    },
+    "lint-staged": {
+        "*.js": [
+            "prettier --write",
+            "xo --fix",
+            "git add"
+        ]
+    },
+    "xo": {
+        "prettier": true,
+        "envs": [
+            "browser",
+            "mocha",
+            "jest"
+        ],
+        "rules": {
+            "import/no-unassigned-import": "off",
+            "node/prefer-global/console": "off",
+            "import/no-anonymous-default-export": "off",
+            "eslint-comments/no-unused-disable": "off",
+            "unicorn/prefer-query-selector": "off",
+            "unicorn/no-reduce": "off",
+            "new-cap": "off",
+            "unicorn/no-fn-reference-in-iterator": "off",
+            "camelcase": [
+                1
+            ],
+            "capitalized-comments": "off",
+            "no-unused-vars": [
+                "warn",
+                {
+                    "args": "all",
+                    "argsIgnorePattern": "(^_$)|(^__)|(req)|(res)|(next)",
+                    "varsIgnorePattern": "(^_$)|(^__)"
+                }
+            ]
+        }
+    }
+}
