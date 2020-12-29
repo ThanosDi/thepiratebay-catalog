@@ -112,8 +112,10 @@ const fetchTorrents = ({categoryId, args}) =>
 
 const catalogHandler = async args => {
 	const topCategory = args.id === 'tpbctlg-movies' ? 'Movies' : 'TV shows';
+	console.log({topCategory});
 	const categoryId = getCategoryId(categories, args.extra.genre || topCategory);
 	const metas = await fetchTorrents({categoryId, args});
+	console.log(metas[0]);
 	return Promise.resolve({metas});
 };
 
