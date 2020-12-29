@@ -1,6 +1,6 @@
 module.exports = {
 	id: 'org.stremio.thepiratebay-catalog',
-	version: '1.0.0',
+	version: '1.0.1',
 
 	name: 'ThePirateBay Catalog',
 	description: 'Addon providing a catalog from The Pirate Bay',
