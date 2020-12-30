@@ -8,8 +8,10 @@ const {
 	T,
 	cond,
 	hasPath,
-	has
+	has,
+	tap
 } = require('ramda');
+const torrentStream = require('torrent-stream');
 const PirateBay = require('thepiratebay');
 const parseVideo = require('video-name-parser');
 const pify = require('pify');
@@ -19,6 +21,7 @@ const pPipe = require('p-pipe');
 const pMap = require('p-map');
 const {encode} = require('base-64');
 
+const {searchCategory} = require('./search-tpb');
 const categories = require('./categories');
 const METAHUB_URL = 'https://images.metahub.space';
 
@@ -86,13 +89,15 @@ const fetchTorrents = ({categoryId, args}) =>
 						sortBy: 'desc'
 					})
 			],
-			[T, ({categoryId}) => PirateBay.search(`top100:${categoryId}`)]
+			[T, ({categoryId}) => searchCategory(categoryId)]
 		]),
+
 		filter(item => parseVideo(item.name).name),
 		torrents =>
 			pMap(torrents, async item => {
 				const parsedName = parseVideo(item.name);
 				const imdbId = (await pify(nameToImdb)(parsedName.name)) || item.name;
+				console.log(imdbId);
 				return {
 					...item,
 					parsedName: `${parsedName.name} ${
@@ -115,7 +120,9 @@ const catalogHandler = async args => {
 	console.log({topCategory});
 	const categoryId = getCategoryId(categories, args.extra.genre || topCategory);
 	const metas = await fetchTorrents({categoryId, args});
-	console.log(metas[0]);
+	// console.log(metas[0]);
+	// const res = await searchCategory(categoryId);
+	// console.log(res);
 	return Promise.resolve({metas});
 };
 
