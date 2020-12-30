@@ -71,8 +71,6 @@ const generateMetaPreview = ({
 
 		Leechers: ${leechers}
 
-		Upload Date: ${uploadDate}
-
 		Uploader: ${uploader}
 		`
     };
