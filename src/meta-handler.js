@@ -21,7 +21,6 @@ const metaHandler = async args => {
 		pathEq(['args', 'type'], 'series'),
 		pipe(
 			pathOr([], ['torrent', 'files']),
-			tap(console.log),
 			map((file, index) => ({
 				...file,
 				index
@@ -33,20 +32,20 @@ const metaHandler = async args => {
 			}),
 			map(file => {
 				const {season, episode} = episodeParser(file.name);
-
+				const parameters = {
+					magnetLink,
+					parsedName: parsedName.trim(),
+					size,
+					seeders,
+					index: file.index
+				};
 				return {
 					name: file.name,
 					season,
 					number: episode,
 					firstAired: '2002-01-31T22:00:00.000Z',
 					id: `${getId(args)}:${season}:${episode}:${encode(
-						JSON.stringify({
-							magnetLink,
-							parsedName,
-							size,
-							seeders,
-							index: file.index
-						})
+						JSON.stringify(parameters)
 					)}`,
 					episode
 				};

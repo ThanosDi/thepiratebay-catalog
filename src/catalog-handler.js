@@ -9,7 +9,8 @@ const {
 	cond,
 	hasPath,
 	has,
-	tap
+	tap,
+	isEmpty
 } = require('ramda');
 const torrentStream = require('torrent-stream');
 const PirateBay = require('thepiratebay');
@@ -21,7 +22,7 @@ const pPipe = require('p-pipe');
 const pMap = require('p-map');
 const {encode} = require('base-64');
 
-const {searchCategory} = require('./search-tpb');
+const {searchCategory, search} = require('./search-tpb');
 const categories = require('./categories');
 const METAHUB_URL = 'https://images.metahub.space';
 
@@ -43,19 +44,21 @@ const generateMetaPreview = ({
 }) => {
 	const isValidImdbId = imdbId.startsWith('tt');
 	const id = isValidImdbId ? imdbId : `tt1234567890`;
-	const poster = `${METAHUB_URL}/poster/large/${imdbId}/img`;
+	const poster = isValidImdbId
+		? `${METAHUB_URL}/poster/large/${imdbId}/img`
+		: '';
+
+	const parameters = {
+		magnetLink,
+		parsedName: parsedName.trim(),
+		size,
+		seeders,
+		leechers,
+		poster,
+		isValidImdbId
+	};
 	return {
-		id: `${id}:${encode(
-			JSON.stringify({
-				magnetLink,
-				parsedName,
-				size,
-				seeders,
-				leechers,
-				poster,
-				isValidImdbId
-			})
-		)}`,
+		id: `${id}:${encode(JSON.stringify(parameters))}`,
 		type,
 		name: parsedName,
 		poster,
@@ -79,15 +82,14 @@ const fetchTorrents = ({categoryId, args}) =>
 			[
 				({args}) => hasPath(['extra', 'search'], args),
 				({args}) =>
-					PirateBay.search(args.extra.search, {
-						category: cond([
+					search(
+						args.extra.search,
+						cond([
 							[propEq('id', 'Movies'), () => 202],
 							[propEq('id', 'Porn'), () => 500],
 							[propEq('id', 'TV shows'), () => 205]
-						])(args),
-						orderBy: 'seeds',
-						sortBy: 'desc'
-					})
+						])(args)
+					)
 			],
 			[T, ({categoryId}) => searchCategory(categoryId)]
 		]),
@@ -96,11 +98,12 @@ const fetchTorrents = ({categoryId, args}) =>
 		torrents =>
 			pMap(torrents, async item => {
 				const parsedName = parseVideo(item.name);
-				const imdbId = (await pify(nameToImdb)(parsedName.name)) || item.name;
-				console.log(imdbId);
+				const imdbId = isEmpty(item.imdb)
+					? (await pify(nameToImdb)(parsedName.name)) || item.name
+					: item.imdb;
 				return {
 					...item,
-					parsedName: `${parsedName.name} ${
+					parsedName: `${parsedName.name.trim()} ${
 						has('season', parsedName) ? `Season ${parsedName.season}` : ''
 					} ${
 						has('episode', parsedName)
@@ -117,12 +120,8 @@ const fetchTorrents = ({categoryId, args}) =>
 
 const catalogHandler = async args => {
 	const topCategory = args.id === 'tpbctlg-movies' ? 'Movies' : 'TV shows';
-	console.log({topCategory});
 	const categoryId = getCategoryId(categories, args.extra.genre || topCategory);
 	const metas = await fetchTorrents({categoryId, args});
-	// console.log(metas[0]);
-	// const res = await searchCategory(categoryId);
-	// console.log(res);
 	return Promise.resolve({metas});
 };
 

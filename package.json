@@ -30,6 +30,7 @@
         "base-64": "^1.0.0",
         "byte-size": "^7.0.0",
         "cheerio": "^1.0.0-rc.5",
+        "delay": "^4.4.0",
         "episode-parser": "^2.0.0",
         "is-video": "^1.0.1",
         "magnet-uri": "^6.1.0",
