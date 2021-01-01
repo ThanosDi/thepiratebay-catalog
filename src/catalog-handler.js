@@ -132,6 +132,7 @@ const fetchTorrents = ({categoryId, args}) =>
 	)({categoryId, args});
 
 const catalogHandler = async args => {
+	console.log('catalogHandler', args);
 	const hasSkip = pathOr(false, ['extra', 'skip'], args);
 	if (hasSkip) {
 		return Promise.resolve({metas: []});
