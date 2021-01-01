@@ -1,5 +1,5 @@
 const request = require('request-promise');
-const {map} = require('ramda');
+const {map, isEmpty} = require('ramda');
 const delay = require('delay');
 const baseUrl = 'https://apibay.org';
 const timeout = 5000;
@@ -9,19 +9,21 @@ const searchCategory = (category, retry = true) => {
 		if (retry) {
 			return delay(timeout).then(() => searchCategory(category, false));
 		}
+
+		return [];
 	});
 };
 
 const search = async (query, category, retry = true) => {
-	return _request(`q.php?q=${query}&cat=${category}`).catch(() => {
+	const queryParsed = query.trim().split(' ').join('+');
+	return _request(`q.php?q=${queryParsed}&cat=${category}`).catch(() => {
 		if (retry) {
 			return delay(timeout).then(() => search(query, category, false));
 		}
+
+		return [];
 	});
 };
-
-// const search = (query, category) =>
-// 	_request(`q.php?q=${query}&cat=${category}`);
 
 const _request = async endpoint => {
 	const url = `${baseUrl}/${endpoint}`;
@@ -39,7 +41,7 @@ const toTorrent = result => {
 		seeders: result.seeders,
 		leechers: result.leechers,
 		uploader: result.username,
-		imdb: result.imdb,
+		imdb: isEmpty(result.imdb) ? 'tt1234567890' : result.imdb,
 		infoHash,
 		magnetLink: `magnet:?xt=urn:btih:${infoHash}`
 	};
