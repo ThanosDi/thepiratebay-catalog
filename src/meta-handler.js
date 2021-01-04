@@ -14,7 +14,6 @@ const FALLBACK_BACKGROUND =
 	'https://www.wallpapertip.com/wmimgs/181-1815770_the-pirate-bay-the-pirate-bay-tracker-torrent.jpg';
 
 const metaHandler = async args => {
-	console.log('metaHandler', args);
 	const {magnetLink, seeders, parsedName, size, poster} = parseId(args);
 
 	const torrent = await m2t.getTorrent(magnetLink);

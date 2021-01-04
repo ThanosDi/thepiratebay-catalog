@@ -11,7 +11,9 @@ const {
 	has,
 	tap,
 	isEmpty,
-	pathOr
+	pathOr,
+	ifElse,
+	pathEq
 } = require('ramda');
 const byteSize = require('byte-size');
 
@@ -56,11 +58,9 @@ const generateMetaPreview = ({
 	uploadDate,
 	uploader
 }) => {
-	const isValidImdbId = imdbId.startsWith('tt');
-	const id = isValidImdbId ? imdbId : `tt1234567890`;
-	const poster = isValidImdbId
-		? `${METAHUB_URL}/poster/large/${imdbId}/img`
-		: '';
+	const isValidImdbId = imdbId === 'tt1234567890';
+	const id = imdbId;
+	const poster = `${METAHUB_URL}/poster/large/${imdbId}/img`;
 	const {value, unit} = byteSize(size);
 	const parameters = {
 		magnetLink,
@@ -97,7 +97,7 @@ const fetchTorrents = ({categoryId, args}) =>
 					search(
 						args.extra.search,
 						cond([
-							[propEq('id', 'Movies'), () => 202],
+							[propEq('id', 'Movies'), () => 200],
 							[propEq('id', 'Porn'), () => 500],
 							[propEq('id', 'TV shows'), () => 205]
 						])(args)
@@ -105,15 +105,21 @@ const fetchTorrents = ({categoryId, args}) =>
 			],
 			[T, ({categoryId}) => searchCategory(categoryId)]
 		]),
-		filter(item => item.name),
+		filter(item => item.seeders > 0 && item.name),
+		filter(item => {
+			if (pathEq(['id'], 'Movies', args)) {
+				const parsedName = parseVideo(cleanString(item.name));
+				return pathEq(['type'], 'movie', parsedName);
+			}
+
+			return true;
+		}),
 		torrents =>
 			pMap(torrents, async item => {
 				const name = cleanString(item.name);
 				const parsedName = parseVideo(name);
 				const imdbId = item.imdb;
-				// const imdbId = (isEmpty(item.imdb) && parsedName.name) ?
-				//     (await pify(nameToImdb)(parsedName.name)) || item.name :
-				//     item.imdb;
+
 				return {
 					...item,
 					parsedName: `${name} ${
@@ -132,16 +138,30 @@ const fetchTorrents = ({categoryId, args}) =>
 	)({categoryId, args});
 
 const catalogHandler = async args => {
-	console.log('catalogHandler', args);
 	const hasSkip = pathOr(false, ['extra', 'skip'], args);
 	if (hasSkip) {
-		return Promise.resolve({metas: []});
+		return Promise.resolve({metas: [], cacheMaxAge: 10});
 	}
 
 	const topCategory = args.id === 'tpbctlg-movies' ? 'Movies' : 'TV shows';
 	const categoryId = getCategoryId(categories, args.extra.genre || topCategory);
+
 	const metas = await fetchTorrents({categoryId, args});
-	return Promise.resolve({metas});
+
+	const cacheProperties = ifElse(
+		isEmpty,
+		() => ({
+			staleRevalidate: 120
+		}),
+		() => ({
+			cacheMaxAge:
+				process.env.ENVIRONMENT === 'development'
+					? process.env.CACHE_TIMEOUT
+					: 3600
+		})
+	)(metas);
+
+	return Promise.resolve({metas, ...cacheProperties});
 };
 
 module.exports = catalogHandler;

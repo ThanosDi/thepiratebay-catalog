@@ -3,13 +3,10 @@ const byteSize = require('byte-size');
 
 const {parseId} = require('./tools');
 const streamHandler = async args => {
-	console.log('streamHandler', args);
-
 	try {
 		const {magnetLink, seeders, parsedName, size, index = false} = parseId(
 			args
 		);
-		console.log({magnetLink, seeders, parsedName, size, index});
 		const {value, unit} = byteSize(size);
 		const {infoHash} = parseTorrent(magnetLink);
 		const stream = {
