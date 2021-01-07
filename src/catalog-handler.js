@@ -9,19 +9,12 @@ const {
 	cond,
 	hasPath,
 	has,
-	tap,
 	isEmpty,
 	pathOr,
-	ifElse,
-	pathEq
+	ifElse
 } = require('ramda');
 const byteSize = require('byte-size');
-
-const torrentStream = require('torrent-stream');
-const PirateBay = require('thepiratebay');
 const parseVideo = require('video-name-parser');
-const pify = require('pify');
-const nameToImdb = require('name-to-imdb');
 
 const pPipe = require('p-pipe');
 const pMap = require('p-map');
@@ -55,8 +48,9 @@ const generateMetaPreview = ({
 	seeders,
 	leechers,
 	magnetLink,
-	uploadDate,
-	uploader
+	uploader,
+	extra,
+	infoHash
 }) => {
 	const isValidImdbId = imdbId === 'tt1234567890';
 	const id = imdbId;
@@ -69,7 +63,9 @@ const generateMetaPreview = ({
 		seeders,
 		leechers,
 		poster,
-		isValidImdbId
+		isValidImdbId,
+		extra,
+		infoHash
 	};
 	return {
 		id: `${id}:${encode(JSON.stringify(parameters))}`,
@@ -97,7 +93,7 @@ const fetchTorrents = ({categoryId, args}) =>
 					search(
 						args.extra.search,
 						cond([
-							[propEq('id', 'Movies'), () => 200],
+							[propEq('id', 'Movies'), () => 201],
 							[propEq('id', 'Porn'), () => 500],
 							[propEq('id', 'TV shows'), () => 205]
 						])(args)
@@ -106,20 +102,11 @@ const fetchTorrents = ({categoryId, args}) =>
 			[T, ({categoryId}) => searchCategory(categoryId)]
 		]),
 		filter(item => item.seeders > 0 && item.name),
-		filter(item => {
-			if (pathEq(['id'], 'Movies', args)) {
-				const parsedName = parseVideo(cleanString(item.name));
-				return pathEq(['type'], 'movie', parsedName);
-			}
-
-			return true;
-		}),
 		torrents =>
 			pMap(torrents, async item => {
 				const name = cleanString(item.name);
 				const parsedName = parseVideo(name);
 				const imdbId = item.imdb;
-
 				return {
 					...item,
 					parsedName: `${name} ${
@@ -131,7 +118,8 @@ const fetchTorrents = ({categoryId, args}) =>
 					}`,
 					imdbId,
 					type: args.type,
-					isSearch: hasPath(['extra', 'search'], args)
+					isSearch: hasPath(['extra', 'search'], args),
+					extra: args
 				};
 			}),
 		map(generateMetaPreview)

@@ -1,14 +1,11 @@
-const parseTorrent = require('parse-torrent');
 const byteSize = require('byte-size');
 
 const {parseId} = require('./tools');
 const streamHandler = async args => {
 	try {
-		const {magnetLink, seeders, parsedName, size, index = false} = parseId(
-			args
-		);
+		const id = parseId(args);
+		const {seeders, parsedName, size, index = false, infoHash} = id;
 		const {value, unit} = byteSize(size);
-		const {infoHash} = parseTorrent(magnetLink);
 		const stream = {
 			name: 'TPB-CTL',
 			title: `${parsedName}
@@ -16,12 +13,11 @@ const streamHandler = async args => {
 👤  ${seeders}`,
 			type: args.type,
 			infoHash,
-			...(index ? {fileIdx: index} : {})
+			...(index === false ? {} : {fileIdx: index})
 		};
 
 		return Promise.resolve({streams: [stream]});
-	} catch (error) {
-		console.log({error});
+	} catch {
 		return Promise.resolve([]);
 	}
 };

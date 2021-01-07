@@ -6,8 +6,6 @@ require('events').EventEmitter.defaultMaxListeners = 50;
 try {
 	serveHTTP(addonInterface, {
 		port: process.env.PORT || 7000,
-		cacheMaxAge: 60
+		cacheMaxAge: 1
 	});
-} catch (error) {
-	console.error(error);
-}
+} catch {}

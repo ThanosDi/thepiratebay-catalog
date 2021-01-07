@@ -2,12 +2,19 @@ module.exports = {
 	id: 'org.stremio.thepiratebay-catalog',
 	version: '1.0.4',
 	name: 'ThePirateBay Catalog',
-	description: 'Addon providing a catalog from The Pirate Bay.',
+	description: 'Addon providing a catalog and search from The Pirate Bay.',
 	isFree: true,
 	resources: ['catalog', 'stream', 'meta'],
-
+	logo:
+		'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/02b4826d-e6a0-4129-8486-38b601edaa03/dcs8pfz-9e7d00ac-d2f7-4ff2-88cb-8466d383a96a.png',
+	background:
+		'https://www.wallpapertip.com/wmimgs/181-1815770_the-pirate-bay-the-pirate-bay-tracker-torrent.jpg',
 	types: ['movie', 'series'],
-
+	contactEmail: 'thanosdi@live.com',
+	behaviorHints: {
+		adult: true,
+		p2p: true
+	},
 	catalogs: [
 		{
 			type: 'movie',
@@ -34,7 +41,7 @@ module.exports = {
 			extra: [
 				{
 					name: 'genre',
-					options: ['TV shows', 'HD - TV shows'],
+					options: ['TV shows', 'HD - TV shows', 'Porn'],
 					isRequired: false
 				}
 			]
@@ -60,7 +67,7 @@ module.exports = {
 			]
 		},
 		{
-			type: 'movie',
+			type: 'series',
 			id: 'Porn',
 			extra: [
 				{
@@ -70,6 +77,6 @@ module.exports = {
 			]
 		}
 	],
-
-	idPrefixes: ['tt']
+	idPrefixes: ['tt'],
+	idProperty: ['imdb_id']
 };
