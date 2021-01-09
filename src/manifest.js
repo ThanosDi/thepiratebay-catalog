@@ -11,10 +11,6 @@ module.exports = {
 		'https://www.wallpapertip.com/wmimgs/181-1815770_the-pirate-bay-the-pirate-bay-tracker-torrent.jpg',
 	types: ['movie', 'series'],
 	contactEmail: 'thanosdi@live.com',
-	behaviorHints: {
-		adult: true,
-		p2p: true
-	},
 	catalogs: [
 		{
 			type: 'movie',
