@@ -11,7 +11,8 @@ const {
 	has,
 	isEmpty,
 	pathOr,
-	ifElse
+	ifElse,
+	tap
 } = require('ramda');
 const byteSize = require('byte-size');
 const parseVideo = require('video-name-parser');
@@ -101,7 +102,7 @@ const fetchTorrents = ({categoryId, args}) =>
 			],
 			[T, ({categoryId}) => searchCategory(categoryId)]
 		]),
-		filter(item => item.seeders > 0 && item.name),
+		filter(item => item.name),
 		torrents =>
 			pMap(torrents, async item => {
 				const name = cleanString(item.name);
