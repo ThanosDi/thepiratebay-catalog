@@ -11,8 +11,7 @@ const {
 	has,
 	isEmpty,
 	pathOr,
-	ifElse,
-	tap
+	ifElse
 } = require('ramda');
 const byteSize = require('byte-size');
 const parseVideo = require('video-name-parser');
@@ -21,7 +20,7 @@ const pPipe = require('p-pipe');
 const pMap = require('p-map');
 const {encode} = require('base-64');
 
-const {searchCategory, search} = require('./search-tpb');
+const {searchCategory, search, searchTop100recent} = require('./search-tpb');
 const categories = require('./categories');
 const METAHUB_URL = 'https://images.metahub.space';
 
@@ -88,6 +87,7 @@ const generateMetaPreview = ({
 const fetchTorrents = ({categoryId, args}) =>
 	pPipe(
 		cond([
+			[({categoryId}) => categoryId === '100', () => searchTop100recent()],
 			[
 				({args}) => hasPath(['extra', 'search'], args),
 				({args}) =>
@@ -129,12 +129,12 @@ const fetchTorrents = ({categoryId, args}) =>
 const catalogHandler = async args => {
 	const hasSkip = pathOr(false, ['extra', 'skip'], args);
 	if (hasSkip) {
-		return Promise.resolve({metas: [], cacheMaxAge: 10});
+		return Promise.resolve({metas: [], cacheMaxAge: 1});
 	}
 
-	const topCategory = args.id === 'tpbctlg-movies' ? 'Movies' : 'TV shows';
+	const topCategory =
+		args.id === 'tpbctlg-movies' ? 'top-100-movies' : 'TV shows';
 	const categoryId = getCategoryId(categories, args.extra.genre || topCategory);
-
 	const metas = await fetchTorrents({categoryId, args});
 
 	const cacheProperties = ifElse(
@@ -146,7 +146,7 @@ const catalogHandler = async args => {
 			cacheMaxAge:
 				process.env.ENVIRONMENT === 'development'
 					? process.env.CACHE_TIMEOUT
-					: 3600
+					: 1 // 3600
 		})
 	)(metas);
 
