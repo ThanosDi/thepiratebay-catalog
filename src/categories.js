@@ -1,13 +1,8 @@
 module.exports = [
 	{
-		name: 'top-100-movies',
-		id: '100'
+		id: '200',
+		name: 'Video'
 	},
-	{
-		name: 'Video',
-		id: '200'
-	},
-
 	{
 		id: '201',
 		name: 'Movies'

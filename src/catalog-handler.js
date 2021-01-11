@@ -11,7 +11,8 @@ const {
 	has,
 	isEmpty,
 	pathOr,
-	ifElse
+	ifElse,
+	anyPass
 } = require('ramda');
 const byteSize = require('byte-size');
 const parseVideo = require('video-name-parser');
@@ -20,7 +21,7 @@ const pPipe = require('p-pipe');
 const pMap = require('p-map');
 const {encode} = require('base-64');
 
-const {searchCategory, search, searchTop100recent} = require('./search-tpb');
+const {searchCategory, search} = require('./search-tpb');
 const categories = require('./categories');
 const METAHUB_URL = 'https://images.metahub.space';
 
@@ -39,6 +40,11 @@ const cleanString = input => {
 
 	return output;
 };
+
+const isTop100 = anyPass([
+	propEq('name', 'Top 100 Movies'),
+	propEq('name', 'Top 100 Porn')
+]);
 
 const generateMetaPreview = ({
 	imdbId,
@@ -87,7 +93,6 @@ const generateMetaPreview = ({
 const fetchTorrents = ({categoryId, args}) =>
 	pPipe(
 		cond([
-			[({categoryId}) => categoryId === '100', () => searchTop100recent()],
 			[
 				({args}) => hasPath(['extra', 'search'], args),
 				({args}) =>
@@ -100,7 +105,7 @@ const fetchTorrents = ({categoryId, args}) =>
 						])(args)
 					)
 			],
-			[T, ({categoryId}) => searchCategory(categoryId)]
+			[T, ({categoryId, args}) => searchCategory(categoryId, args)]
 		]),
 		filter(item => item.name),
 		torrents =>
@@ -127,13 +132,14 @@ const fetchTorrents = ({categoryId, args}) =>
 	)({categoryId, args});
 
 const catalogHandler = async args => {
+	console.log({args});
 	const hasSkip = pathOr(false, ['extra', 'skip'], args);
-	if (hasSkip) {
+	const hasSearch = pathOr(false, ['extra', 'search'], args);
+	if (hasSkip && hasSearch) {
 		return Promise.resolve({metas: [], cacheMaxAge: 1});
 	}
 
-	const topCategory =
-		args.id === 'tpbctlg-movies' ? 'top-100-movies' : 'TV shows';
+	const topCategory = args.id === 'tpbctlg-movies' ? 'Movies' : 'TV shows';
 	const categoryId = getCategoryId(categories, args.extra.genre || topCategory);
 	const metas = await fetchTorrents({categoryId, args});
 
