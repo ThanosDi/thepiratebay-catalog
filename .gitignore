@@ -33,3 +33,4 @@ wercker.env
 .vscode
 
 .vercel
+.git.old
