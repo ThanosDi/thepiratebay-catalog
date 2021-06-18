@@ -12,7 +12,9 @@ const {
 	isEmpty,
 	pathOr,
 	ifElse,
-	tap
+	tap,
+	sortBy,
+	compose
 } = require('ramda');
 const byteSize = require('byte-size');
 const parseVideo = require('video-name-parser');
@@ -24,6 +26,8 @@ const {encode} = require('base-64');
 const {searchCategory, search} = require('./search-tpb');
 const categories = require('./categories');
 const METAHUB_URL = 'https://images.metahub.space';
+
+const sortBySeeders = sortBy(compose(a => -a, prop('seeders')));
 
 const getCategoryId = pipe(
 	(categories, category) => find(propEq('name', category), categories),
@@ -96,6 +100,7 @@ const fetchTorrents = ({categoryId, args}) =>
 						cond([
 							[propEq('id', 'Movies'), () => 201],
 							[propEq('id', 'Porn'), () => 500],
+							[propEq('id', 'Porn recent'), () => 600],
 							[propEq('id', 'TV shows'), () => 205]
 						])(args)
 					)
@@ -103,6 +108,7 @@ const fetchTorrents = ({categoryId, args}) =>
 			[T, ({categoryId}) => searchCategory(categoryId)]
 		]),
 		filter(item => item.name),
+		sortBySeeders,
 		torrents =>
 			pMap(torrents, async item => {
 				const name = cleanString(item.name);

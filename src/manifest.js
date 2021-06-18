@@ -25,7 +25,8 @@ module.exports = {
 						'Movie clips',
 						'HD - Movies',
 						'3D',
-						'Porn'
+						'Porn',
+						'Porn recent'
 					],
 					isRequired: false
 				}

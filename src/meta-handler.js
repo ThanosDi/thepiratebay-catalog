@@ -67,7 +67,6 @@ const getVideoArray = ({
 					extra,
 					infoHash
 				};
-				console.log(parameters);
 
 				// Use firstAired hack to access search view or episode view.
 				const firstAired = shouldShowSearch({season, extra})

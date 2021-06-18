@@ -4,8 +4,20 @@ const delay = require('delay');
 const baseUrl = 'https://apibay.org';
 const timeout = 5000;
 
+const _request = async endpoint => {
+	const url = `${baseUrl}/${endpoint}`;
+
+	return request
+		.get(url, {timeout})
+		.then(data => JSON.parse(data))
+		.then(map(toTorrent));
+};
+
 const searchCategory = (category, retry = true) => {
-	return _request(`q.php?q=+&cat=${category}`).catch(() => {
+	const url =
+		category === '600' ? `q.php?q=category:500` : `q.php?q=+&cat=${category}`;
+
+	return _request(url).catch(() => {
 		if (retry) {
 			return delay(timeout).then(() => searchCategory(category, false));
 		}
@@ -23,14 +35,6 @@ const search = async (query, category, retry = true) => {
 
 		return [];
 	});
-};
-
-const _request = async endpoint => {
-	const url = `${baseUrl}/${endpoint}`;
-	return request
-		.get(url, {timeout})
-		.then(data => JSON.parse(data))
-		.then(map(toTorrent));
 };
 
 const toTorrent = result => {
