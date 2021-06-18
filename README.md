@@ -21,4 +21,4 @@ Then run Stremio, click the add-on button (puzzle piece icon) on the top right, 
 
 Addon public url: https://5db836ec3ef8-thepiratebay-ctl.baby-beamup.club
 
-publish once done: https://stremio.github.io/stremio-publish-addon/index.html
+Buy Me A Beer: `1KuCYGRWnBQDAgFiEuXc3Mtpk2yjMDadLo` BTC Wallet
