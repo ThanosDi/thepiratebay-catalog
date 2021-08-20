@@ -74,6 +74,6 @@ module.exports = {
 			]
 		}
 	],
-	idPrefixes: ['tt'],
+	idPrefixes: ['tpb-ctl'],
 	idProperty: ['imdb_id']
 };
