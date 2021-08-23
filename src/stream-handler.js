@@ -4,6 +4,7 @@ const {parseId} = require('./tools');
 const streamHandler = async args => {
 	try {
 		const id = parseId(args);
+
 		const {seeders, parsedName, size, index = false, infoHash} = id;
 		const {value, unit} = byteSize(size);
 		const stream = {

@@ -58,7 +58,7 @@ const generateMetaPreview = ({
 	infoHash
 }) => {
 	const isValidImdbId = imdbId === 'tt1234567890';
-	const id = imdbId;
+
 	const poster = `${METAHUB_URL}/poster/large/${imdbId}/img`;
 	const {value, unit} = byteSize(size);
 	const parameters = {
@@ -73,7 +73,7 @@ const generateMetaPreview = ({
 		infoHash
 	};
 	return {
-		id: `${id}:${encode(JSON.stringify(parameters))}`,
+		id: `tpb-ctl:${encode(JSON.stringify(parameters))}`,
 		type,
 		name: parsedName,
 		poster,
