@@ -7,5 +7,5 @@ const getId = pipe(prop('id'), split(':'), head);
 
 module.exports = {
 	parseId,
-	getId
+	getId,
 };

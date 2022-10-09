@@ -47,7 +47,7 @@ const toTorrent = result => {
 		uploader: result.username,
 		imdb: isEmpty(result.imdb) ? 'tt1234567890' : result.imdb,
 		infoHash,
-		magnetLink: `magnet:?xt=urn:btih:${infoHash}`
+		magnetLink: `magnet:?xt=urn:btih:${infoHash}`,
 	};
 };
 

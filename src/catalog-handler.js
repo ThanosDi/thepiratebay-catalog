@@ -14,7 +14,7 @@ const {
 	ifElse,
 	tap,
 	sortBy,
-	compose
+	compose,
 } = require('ramda');
 const byteSize = require('byte-size');
 const parseVideo = require('video-name-parser');
@@ -31,7 +31,7 @@ const sortBySeeders = sortBy(compose(a => -a, prop('seeders')));
 
 const getCategoryId = pipe(
 	(categories, category) => find(propEq('name', category), categories),
-	prop('id')
+	prop('id'),
 );
 
 const cleanString = input => {
@@ -55,7 +55,7 @@ const generateMetaPreview = ({
 	magnetLink,
 	uploader,
 	extra,
-	infoHash
+	infoHash,
 }) => {
 	const isValidImdbId = imdbId === 'tt1234567890';
 
@@ -70,7 +70,7 @@ const generateMetaPreview = ({
 		poster,
 		isValidImdbId,
 		extra,
-		infoHash
+		infoHash,
 	};
 	return {
 		id: `tpb-ctl:${encode(JSON.stringify(parameters))}`,
@@ -85,7 +85,7 @@ const generateMetaPreview = ({
 		Leechers: ${leechers}
 
 		Uploader: ${uploader}
-		`
+		`,
 	};
 };
 
@@ -101,11 +101,11 @@ const fetchTorrents = ({categoryId, args}) =>
 							[propEq('id', 'Movies'), () => 201],
 							[propEq('id', 'Porn'), () => 500],
 							[propEq('id', 'Porn recent'), () => 600],
-							[propEq('id', 'TV shows'), () => 205]
-						])(args)
-					)
+							[propEq('id', 'TV shows'), () => 205],
+						])(args),
+					),
 			],
-			[T, ({categoryId}) => searchCategory(categoryId)]
+			[T, ({categoryId}) => searchCategory(categoryId)],
 		]),
 		filter(item => item.name),
 		sortBySeeders,
@@ -126,10 +126,10 @@ const fetchTorrents = ({categoryId, args}) =>
 					imdbId,
 					type: args.type,
 					isSearch: hasPath(['extra', 'search'], args),
-					extra: args
+					extra: args,
 				};
 			}),
-		map(generateMetaPreview)
+		map(generateMetaPreview),
 	)({categoryId, args});
 
 const catalogHandler = async args => {
@@ -146,14 +146,14 @@ const catalogHandler = async args => {
 	const cacheProperties = ifElse(
 		isEmpty,
 		() => ({
-			staleRevalidate: 120
+			staleRevalidate: 120,
 		}),
 		() => ({
 			cacheMaxAge:
 				process.env.ENVIRONMENT === 'development'
 					? process.env.CACHE_TIMEOUT
-					: 3600
-		})
+					: 3600,
+		}),
 	)(metas);
 
 	return Promise.resolve({metas, ...cacheProperties});

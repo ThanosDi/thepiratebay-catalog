@@ -26,11 +26,11 @@ module.exports = {
 						'HD - Movies',
 						'3D',
 						'Porn',
-						'Porn recent'
+						'Porn recent',
 					],
-					isRequired: false
-				}
-			]
+					isRequired: false,
+				},
+			],
 		},
 		{
 			type: 'series',
@@ -38,10 +38,10 @@ module.exports = {
 			extra: [
 				{
 					name: 'genre',
-					options: ['TV shows', 'HD - TV shows', 'Porn'],
-					isRequired: false
-				}
-			]
+					options: ['TV shows', 'HD - TV shows', 'Porn', 'Porn Recent'],
+					isRequired: false,
+				},
+			],
 		},
 		{
 			type: 'movie',
@@ -49,9 +49,9 @@ module.exports = {
 			extra: [
 				{
 					name: 'search',
-					isRequired: true
-				}
-			]
+					isRequired: true,
+				},
+			],
 		},
 		{
 			type: 'series',
@@ -59,9 +59,9 @@ module.exports = {
 			extra: [
 				{
 					name: 'search',
-					isRequired: true
-				}
-			]
+					isRequired: true,
+				},
+			],
 		},
 		{
 			type: 'series',
@@ -69,11 +69,11 @@ module.exports = {
 			extra: [
 				{
 					name: 'search',
-					isRequired: true
-				}
-			]
-		}
+					isRequired: true,
+				},
+			],
+		},
 	],
 	idPrefixes: ['tpb-ctl'],
-	idProperty: ['imdb_id']
+	idProperty: ['imdb_id'],
 };

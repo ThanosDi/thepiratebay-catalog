@@ -14,7 +14,7 @@ const streamHandler = async args => {
 👤  ${seeders}`,
 			type: args.type,
 			infoHash,
-			...(index === false ? {} : {fileIdx: index})
+			...(index === false ? {} : {fileIdx: index}),
 		};
 
 		return Promise.resolve({streams: [stream]});

@@ -1,7 +1,7 @@
 {
     "name": "thepiratebay-catalog",
     "version": "1.1.0",
-    "description": "The Pirate Bay Catalog to browser torrents.",
+    "description": "The Pirate Bay Catalog to browse torrents.",
     "main": "./src/server.js",
     "scripts": {
         "start": "node src/server.js",
@@ -13,12 +13,11 @@
         "url": "https://github.com/thanosdi/thepiratebay-catalog"
     },
     "keywords": [
-        "stremio",
+        "stremio addons",
         "stremio-addons",
-        "addons",
         "thepiratebay",
-        "catalog torrent",
-        "browser torrents"
+        "catalog torrents",
+        "browse torrents"
     ],
     "author": "ThanosDi",
     "license": "MIT",
@@ -57,9 +56,6 @@
         "nodemon": "^2.0.6",
         "prettier": "^2.2.1",
         "xo": "^0.36.1"
-    },
-    "prettier": {
-        "arrowParens": "avoid"
     },
     "lint-staged": {
         "*.js": [

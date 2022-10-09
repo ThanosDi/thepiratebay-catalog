@@ -6,7 +6,7 @@ const {
 	pathOr,
 	pathEq,
 	propOr,
-	addIndex
+	addIndex,
 } = require('ramda');
 const {encode} = require('base-64');
 const Magnet2torrent = require('magnet2torrent-js');
@@ -28,7 +28,7 @@ const FALLBACK_BACKGROUND =
 
 const shouldShowSearch = anyPass([
 	propEq('season', 0),
-	pathEq(['extra', 'id'], 'Porn')
+	pathEq(['extra', 'id'], 'Porn'),
 ]);
 
 const getVideoArray = ({
@@ -40,18 +40,18 @@ const getVideoArray = ({
 	size,
 	poster,
 	extra,
-	infoHash
+	infoHash,
 }) =>
 	ifElse(
 		anyPass([
 			pathEq(['args', 'type'], 'series'),
-			pathEq(['extra', 'id'], 'Porn')
+			pathEq(['extra', 'id'], 'Porn'),
 		]),
 		pipe(
 			pathOr([], ['torrent', 'files']),
 			mapIndexed((file, index) => ({
 				...file,
-				index
+				index,
 			})),
 			filter(({name}) => isVideo(name)),
 			map(file => {
@@ -65,7 +65,7 @@ const getVideoArray = ({
 					seeders,
 					index: file.index,
 					extra,
-					infoHash
+					infoHash,
 				};
 
 				// Use firstAired hack to access search view or episode view.
@@ -78,13 +78,13 @@ const getVideoArray = ({
 					number: episode,
 					firstAired,
 					id: `${getId(args)}:${season}:${episode}:${encode(
-						JSON.stringify(parameters)
+						JSON.stringify(parameters),
 					)}`,
-					episode
+					episode,
 				};
-			})
+			}),
 		),
-		() => []
+		() => [],
 	)({
 		args,
 		torrent,
@@ -94,7 +94,7 @@ const getVideoArray = ({
 		size,
 		poster,
 		extra,
-		infoHash
+		infoHash,
 	});
 
 const metaHandler = async args => {
@@ -105,7 +105,7 @@ const metaHandler = async args => {
 		size,
 		poster,
 		extra,
-		infoHash
+		infoHash,
 	} = parseId(args);
 	const torrent = await m2t.getTorrent(magnetLink);
 	const videos = getVideoArray({
@@ -117,14 +117,14 @@ const metaHandler = async args => {
 		size,
 		poster,
 		extra,
-		infoHash
+		infoHash,
 	});
 
 	const logoUrl = poster.replace('/poster/', '/logo/');
 	const backgroundUrl = poster.replace('/poster/', '/background/');
 	const [logo, background] = await Promise.all([
 		urlExist(logoUrl),
-		urlExist(backgroundUrl)
+		urlExist(backgroundUrl),
 	]);
 	const metaObject = {
 		id: args.id,
@@ -134,7 +134,7 @@ const metaHandler = async args => {
 		posterShape: 'regular',
 		type: args.type,
 		videos,
-		description: parsedName.toUpperCase()
+		description: parsedName.toUpperCase(),
 	};
 
 	return Promise.resolve({meta: metaObject});
