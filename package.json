@@ -1,6 +1,6 @@
 {
     "name": "thepiratebay-catalog",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "The Pirate Bay Catalog to browse torrents.",
     "main": "./src/server.js",
     "scripts": {
